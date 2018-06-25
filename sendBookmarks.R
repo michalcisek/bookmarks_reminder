@@ -7,12 +7,12 @@ library(jsonlite)
 source("functions.R")
 
 #read bookmarks saved as html file
-list.files(pattern = "bookmarks.*html") %>% 
+list.files("./data/", pattern = "bookmarks.*html") %>% 
   sapply(get_bookmarks_date) %>% 
   which.max %>% 
   names -> books
   
-books <- read_html(books)
+books <- read_html(paste0("./data/", books))
 
 #extract links from bookmarks
 books %>% 
