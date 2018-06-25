@@ -4,8 +4,15 @@ library(rvest)
 library(mailR)
 library(jsonlite)
 
+source("functions.R")
+
 #read bookmarks saved as html file
-books <- read_html("bookmarks_5_21_18.html")
+list.files(pattern = "bookmarks.*html") %>% 
+  sapply(get_bookmarks_date) %>% 
+  which.max %>% 
+  names -> books
+  
+books <- read_html(books)
 
 #extract links from bookmarks
 books %>% 
