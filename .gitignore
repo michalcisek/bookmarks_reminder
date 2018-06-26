@@ -4,5 +4,4 @@
 *.Ruserdata
 *.Rproj
 passwordGmail.json
-data/
 *.rds
