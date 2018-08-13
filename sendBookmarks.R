@@ -4,15 +4,15 @@ library(rvest)
 library(mailR)
 library(jsonlite)
 
-source("functions.R")
+source("/home/cisu/bookmarks_reminder/functions.R")
 
 #read bookmarks saved as html file
-list.files("./data/", pattern = "bookmarks.*html") %>% 
+list.files("/home/cisu/bookmarks_reminder/data/", pattern = "bookmarks.*html") %>% 
   sapply(get_bookmarks_date) %>% 
   which.max %>% 
   names -> books
   
-books <- read_html(paste0("./data/", books))
+books <- read_html(paste0("/home/cisu/bookmarks_reminder/data/", books))
 
 #extract links from bookmarks
 books %>% 
@@ -21,10 +21,10 @@ books %>%
   unique -> links
 
 #load list of already seen bookmarks
-if (!file.exists("seen_bookmarks.rds")){
+if (!file.exists("/home/cisu/bookmarks_reminder/seen_bookmarks.rds")){
   seen_books <- NULL
 } else {
-  seen_books <- readRDS("seen_bookmarks.rds")
+  seen_books <- readRDS("/home/cisu/bookmarks_reminder/seen_bookmarks.rds")
 }
 
 #remove already seen bookmarks from list
@@ -37,17 +37,17 @@ chosen <- sample(links, 7)
 seen_books %<>% c(chosen)
 
 #save already seen bookmarks
-saveRDS(seen_books, "seen_bookmarks.rds")
+saveRDS(seen_books, "/home/cisu/bookmarks_reminder/seen_bookmarks.rds")
 
 #prepare and send mail with chosen bookmarks
 body <- paste0("<ul>", paste0("<li>", chosen, "</li>", collapse = ""), "</ul>")
-passwd <- read_json("passwordGmail.json")$password
+passwd <- read_json("/home/cisu/bookmarks_reminder/passwordGmail.json")$password
 
 send.mail(from = "mcisek93@gmail.com",
           to = "mcisek93@gmail.com",
           subject = "Weekly bookmarks dose!",
           body = body,
-          smtp = list(host.name = "smtp.gmail.com", port = 587, 
+          smtp = list(host.name = "smtp.gmail.com", port = 465, 
                       user.name = "mcisek93@gmail.com", passwd = passwd, 
                       ssl = TRUE), 
           authenticate = TRUE, 
